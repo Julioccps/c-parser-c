@@ -13,9 +13,9 @@ Token* create_token(TokenType type, const char *value, int line, int column){
 	return tk;
 }
 
-LexerCtx* init_lexer(const char* filename){
+LexerCtx* init_lexer(const char* source){
 	LexerCtx* lexer_ctx = malloc(sizeof(LexerCtx));
-	lexer_ctx->source = strdup(filename);
+	lexer_ctx->source = strdup(source);
 	lexer_ctx->line = 0;
 	lexer_ctx->column = 1;
 	lexer_ctx->cursor = 1;
