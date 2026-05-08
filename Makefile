@@ -5,7 +5,7 @@ BUILD_DIR := build
 CC := clang
 CCFLAGS := -Wall -Wextra -I$(INCLUDE_DIR)
 
-SRCS := $(SRC_DIR)/main.c
+SRCS := $(SRC_DIR)/main.c $(SRC_DIR)/lexer.c
 OBJS := $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRCS))
 TARGET := $(BUILD_DIR)/cppparser
 
@@ -17,7 +17,7 @@ $(TARGET): $(OBJS)
 	$(CC) $(CCFLAGS) -o $@ $^
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
-	mkdir $(dir $@)
+	mkdir -p $(dir $@)
 	$(CC) $(CCFLAGS) -c -o $@ $<
 
 clean: 
