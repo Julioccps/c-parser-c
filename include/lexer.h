@@ -18,10 +18,19 @@ typedef struct {
     int column;
 } Token;
 
+typedef struct{
+	const char* source;
+	int cursor;
+	int line;
+	int column;
+}LexerCtx;
+
 // Function to create a new token (to be implemented in lexer.c)
 Token* create_token(TokenType type, const char* value, int line, int column);
 
-// Function to free token memory
+LexerCtx* init_lexer(const char* filename);
+// Function to free token and context memory
+void free_context(LexerCtx* ctx);
 void free_token(Token* token);
 
 #endif

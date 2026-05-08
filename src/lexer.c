@@ -13,6 +13,22 @@ Token* create_token(TokenType type, const char *value, int line, int column){
 	return tk;
 }
 
+LexerCtx* init_lexer(const char* filename){
+	LexerCtx* lexer_ctx = malloc(sizeof(LexerCtx));
+	lexer_ctx->source = strdup(filename);
+	lexer_ctx->line = 1;
+	lexer_ctx->column = 1;
+	lexer_ctx->cursor = 1;
+	return lexer_ctx;
+}
+
+void free_context(LexerCtx* ctx){
+	if (ctx){
+		free(ctx->source);
+		free(ctx);
+	}
+}
+
 void free_token(Token *token){
 	if (token){
 		free(token->value);
