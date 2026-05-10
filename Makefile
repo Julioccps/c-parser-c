@@ -3,11 +3,13 @@ INCLUDE_DIR := include
 BUILD_DIR := build
 
 ifeq ($(OS),Windows_NT)
-    MKDIR = if not exist $(BUILD_DIR) mkdir $(BUILD_DIR)
-    RM = rmdir /s /q 
+MKDIR = if not exist $(BUILD_DIR) mkdir $(BUILD_DIR)
+RM = rmdir /s /q 
+TARGET = $(BUILD_DIR)/cppparser.exe
 else
-    MKDIR = mkdir -p $(BUILD_DIR)
-    RM = rm -rf
+MKDIR = mkdir -p $(BUILD_DIR)
+RM = rm -rf
+TARGET := $(BUILD_DIR)/cppparser
 endif
 
 CC := clang
@@ -15,7 +17,6 @@ CCFLAGS := -Wall -Wextra -I$(INCLUDE_DIR)
 
 SRCS := $(SRC_DIR)/main.c $(SRC_DIR)/lexer.c
 OBJS := $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRCS))
-TARGET := $(BUILD_DIR)/cppparser
 
 .PHONY: all clean
 
