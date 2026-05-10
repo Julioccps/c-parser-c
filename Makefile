@@ -2,6 +2,14 @@ SRC_DIR := src
 INCLUDE_DIR := include
 BUILD_DIR := build
 
+ifeq ($(OS),Windows_NT)
+    MKDIR = if not exist "$@" mkdir
+    RM = rmdir /s /q
+else
+    MKDIR = mkdir -p
+    RM = rm -rf
+endif
+
 CC := clang
 CCFLAGS := -Wall -Wextra -I$(INCLUDE_DIR)
 
@@ -17,9 +25,9 @@ $(TARGET): $(OBJS)
 	$(CC) $(CCFLAGS) -o $@ $^
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
-	mkdir -p $(dir $@)
+	$(MKDIR) $(dir $@)
 	$(CC) $(CCFLAGS) -c -o $@ $<
 
 clean: 
-	rm -rf $(BUILD_DIR)
+	$(RM) $(BUILD_DIR)
 
