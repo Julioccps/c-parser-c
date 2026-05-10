@@ -3,10 +3,10 @@ INCLUDE_DIR := include
 BUILD_DIR := build
 
 ifeq ($(OS),Windows_NT)
-    MKDIR = if not exist "$@" mkdir
-    RM = rmdir /s /q
+    MKDIR = if not exist $(BUILD_DIR) mkdir $(BUILD_DIR)
+    RM = rmdir /s /q 
 else
-    MKDIR = mkdir -p
+    MKDIR = mkdir -p $(BUILD_DIR)
     RM = rm -rf
 endif
 
@@ -25,7 +25,7 @@ $(TARGET): $(OBJS)
 	$(CC) $(CCFLAGS) -o $@ $^
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
-	$(MKDIR) $(dir $@)
+	$(MKDIR) 
 	$(CC) $(CCFLAGS) -c -o $@ $<
 
 clean: 
