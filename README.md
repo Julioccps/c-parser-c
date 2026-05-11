@@ -2,7 +2,7 @@
 
 > Para disciplina de Linguagens de Programação
 
-## Requisitos para buildar o projeto
+## Requisitos para construir o projeto
 - `make`;
 - `llvm`(`clang`);
 
