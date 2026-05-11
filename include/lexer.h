@@ -19,7 +19,7 @@ typedef struct {
 } Token;
 
 typedef struct{
-	const char* source;
+	char* source;
 	int cursor;
 	int line;
 	int column;
