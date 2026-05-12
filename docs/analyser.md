@@ -1,4 +1,4 @@
-# Analyzer
+# Analyser
 ### O que foi feito e porquê
 - [Definições da linguagem](../include/lang_defs.h);
     - Agora o motivo, as linguagens possuem keywords e simbolos definidos, o
