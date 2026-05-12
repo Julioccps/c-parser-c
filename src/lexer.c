@@ -24,7 +24,10 @@ LexerCtx* init_lexer(const char* source){
 	return lexer_ctx;
 }
 
-Token* advance_token(LexerCtx* ctx){	
+Token* advance_token(LexerCtx* ctx){
+	if (ctx->token_count >= ctx->token_capacity){
+		ctx->token_capacity *= 2;
+	}
 	char* value = NULL;
 	TokenType type = TOKEN_ERROR;
 	const char tmp[2] = {ctx->source[ctx->cursor], '\0'};	
@@ -91,6 +94,8 @@ Token* advance_token(LexerCtx* ctx){
 	if (value != NULL){
 		Token* token = create_token(type, value, ctx->line, ctx->column);
 		free(value);
+		ctx->tokens[ctx->token_count] = token;
+		ctx->token_count++;
 		return token; 
 	}
 	free(value);
