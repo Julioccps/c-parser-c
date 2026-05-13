@@ -21,12 +21,18 @@ LexerCtx* init_lexer(const char* source){
 	lexer_ctx->line = 1;
 	lexer_ctx->column = 1;
 	lexer_ctx->cursor = 0;
+	lexer_ctx->token_count = 0;
+	lexer_ctx->current_idx = 0;
+	lexer_ctx->token_capacity = INITIAL_TOKEN_COUNT;
+	lexer_ctx->tokens = malloc(sizeof(Token*) * lexer_ctx->token_capacity);
+
 	return lexer_ctx;
 }
 
 Token* advance_token(LexerCtx* ctx){
 	if (ctx->token_count >= ctx->token_capacity){
 		ctx->token_capacity *= 2;
+		ctx->tokens = realloc(ctx->tokens, sizeof(Token*) * ctx->token_capacity);
 	}
 	char* value = NULL;
 	TokenType type = TOKEN_ERROR;
@@ -40,22 +46,32 @@ Token* advance_token(LexerCtx* ctx){
 		case ASSIGN:
 			type = TOKEN_SYMBOL;
 			value = strdup(tmp);
+			ctx->cursor++;
+			ctx->column++;
 			break;
 		case '<':
 			if (ctx->source[ctx->cursor + 1] == '<'){
 				value = strdup(BITSHIFT_LEFT);
 				type = TOKEN_SYMBOL;
+				ctx->cursor += 2;
+				ctx->column += 2;
 				break;
 			}
 			value = strdup(tmp);
+			ctx->cursor++;
+			ctx->column++;
 			break;
 		case ':':
 			if (ctx->source[ctx->cursor + 1] == ':'){
 				value = strdup(SCOPE_RESOLUTION);
 				type = TOKEN_SYMBOL;
+				ctx->cursor += 2;
+				ctx->column += 2;
 				break;
 			}
 			value = strdup(tmp);
+			ctx->cursor++;
+			ctx->column++;
 			break;
 		default:
 			if (isdigit(ctx->source[ctx->cursor])){
@@ -66,6 +82,7 @@ Token* advance_token(LexerCtx* ctx){
 					ctx->column++;
 				}	
 				int length = ctx->cursor - start;
+				type = TOKEN_LITERAL_INT;
 				value = strndup(&ctx->source[start], length);
 				break;
 			}else if (isalpha(ctx->source[ctx->cursor]) || ctx->source[ctx->cursor] == '_'){
@@ -77,18 +94,30 @@ Token* advance_token(LexerCtx* ctx){
 				}	
 				int length = ctx->cursor - start;
 				value = strndup(&ctx->source[start], length);
+				if ((strcmp(value, INT_DEF) == 0) || (strcmp(value, VOID_DEF) == 0) 
+				    || (strcmp(value, STD_NAMESPACE) == 0) || (strcmp(value, CONSOLE_OUT) == 0)
+				    || (strcmp(value, END_LINE) == 0)){
+						type = TOKEN_KEYWORD;
+				}
+				else {
+					type = TOKEN_IDENTIFIER;
+				}
 				break;
 			}else if (isspace(ctx->source[ctx->cursor])){
 				while (isspace(ctx->source[ctx->cursor])){
 				if (ctx->source[ctx->cursor] == '\n'){
 					ctx->line++;
 					ctx->column = 1;
-				}else{
-				ctx->column++;}
-				ctx->cursor++;
+				}
+				else {
+					ctx->column++;}
+					ctx->cursor++;
 				}
 				
 				break;
+			}
+			else if (ctx->source[ctx->cursor] == '\0'){
+				type = TOKEN_EOF;
 			}
 	}
 	if (value != NULL){
