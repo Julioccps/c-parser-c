@@ -6,7 +6,6 @@ void multiplicacao(){
     int resultado  numero1 * numero2;
     std::cout << << resultado << std::endl;
 }
-
-void main() {
+int main() {
     multiplicacao();
 }

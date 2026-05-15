@@ -7,6 +7,6 @@ void subtracao(){
     std::cout <<              resultado << std::endl;
 }
 
-void main() {
+int main() {
     subtracao();
 }
