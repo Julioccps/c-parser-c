@@ -6,9 +6,20 @@
 - `make`;
 - `llvm`(`clang`);
 
-## TODO List:
-- [ ] Detecção de erros léxicos e sintáticos;
-- [ ] Detecção de erros semânticos;
-- [ ] Log de erros correspondentes ao compilador oficial;
+## Como construir e rodar
+- Para contruir de 
+``` bash
+make
+```
+- E para rodar de 
+``` bash
+./build/cppparser
+```
 
+## Argumentos
+``` bash
+./build/cppparser -f <nome_do_arquivo>
+```
 
+## Documentação do projeto
+- [Arquivo Analyser](docs/analyser.md);
