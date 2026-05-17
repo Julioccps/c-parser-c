@@ -44,10 +44,35 @@ Token* advance_token(LexerCtx* ctx){
 		case CLOSE_BRACE:
 		case SEMICOLON:
 		case ASSIGN:
+		case OP_PLUS:
+		case OP_MINUS:
+		case OP_MULT:
+		case OP_DIV:
 			type = TOKEN_SYMBOL;
 			value = strdup(tmp);
 			ctx->cursor++;
 			ctx->column++;
+			break;
+		case '"':
+			ctx->cursor++; // Skip opening quote
+			ctx->column++;
+			int str_start = ctx->cursor;
+			while (ctx->source[ctx->cursor] != '"' && ctx->source[ctx->cursor] != '\0') {
+				if (ctx->source[ctx->cursor] == '\n') {
+					ctx->line++;
+					ctx->column = 1;
+				} else {
+					ctx->column++;
+				}
+				ctx->cursor++;
+			}
+			int str_length = ctx->cursor - str_start;
+			type = TOKEN_LITERAL_STRING;
+			value = strndup(&ctx->source[str_start], str_length);
+			if (ctx->source[ctx->cursor] == '"') {
+				ctx->cursor++; // Skip closing quote
+				ctx->column++;
+			}
 			break;
 		case '<':
 			if (ctx->source[ctx->cursor + 1] == '<'){
@@ -118,6 +143,7 @@ Token* advance_token(LexerCtx* ctx){
 			}
 			else if (ctx->source[ctx->cursor] == '\0'){
 				type = TOKEN_EOF;
+				value = strdup("EOF");
 			}
 	}
 	if (value != NULL){
@@ -129,6 +155,13 @@ Token* advance_token(LexerCtx* ctx){
 	}
 	free(value);
 	return NULL;
+}
+
+void tokenize_all(LexerCtx* ctx) {
+	while (1) {
+		Token* token = advance_token(ctx);
+		if (token && token->type == TOKEN_EOF) break;
+	}
 }
 
 Token* peek_token(LexerCtx* ctx, int offset){

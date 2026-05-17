@@ -45,6 +45,7 @@ LexerCtx* init_lexer(const char* source);
 Token* advance_token(LexerCtx* ctx);
 Token* peek_token(LexerCtx* ctx, int offset);
 int match_token(LexerCtx* ctx, TokenType type);
+void tokenize_all(LexerCtx* ctx);
 
 // Function to free token and context memory
 
