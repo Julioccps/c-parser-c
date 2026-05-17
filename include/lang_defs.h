@@ -18,4 +18,10 @@
 #define ASSIGN '='
 #define BITSHIFT_LEFT "<<"
 
+// Math Operators
+#define OP_PLUS '+'
+#define OP_MINUS '-'
+#define OP_MULT '*'
+#define OP_DIV '/'
+
 #endif
