@@ -74,6 +74,13 @@ Token* advance_token(LexerCtx* ctx){
 				ctx->column++;
 			}
 			break;
+		case '#':
+			// Ignore preprocessor directives until end of line
+			while (ctx->source[ctx->cursor] != '\n' && ctx->source[ctx->cursor] != '\0') {
+				ctx->cursor++;
+				ctx->column++;
+			}
+			return advance_token(ctx);
 		case '<':
 			if (ctx->source[ctx->cursor + 1] == '<'){
 				value = strdup(BITSHIFT_LEFT);
@@ -113,7 +120,7 @@ Token* advance_token(LexerCtx* ctx){
 			}else if (isalpha(ctx->source[ctx->cursor]) || ctx->source[ctx->cursor] == '_'){
 				int start = ctx->cursor;
 
-				while (isalpha(ctx->source[ctx->cursor]) || ctx->source[ctx->cursor] == '_'){
+				while (isalnum(ctx->source[ctx->cursor]) || ctx->source[ctx->cursor] == '_'){
 					ctx->cursor++;
 					ctx->column++;
 				}	
@@ -121,7 +128,7 @@ Token* advance_token(LexerCtx* ctx){
 				value = strndup(&ctx->source[start], length);
 				if ((strcmp(value, INT_DEF) == 0) || (strcmp(value, VOID_DEF) == 0) 
 				    || (strcmp(value, STD_NAMESPACE) == 0) || (strcmp(value, CONSOLE_OUT) == 0)
-				    || (strcmp(value, END_LINE) == 0)){
+				    || (strcmp(value, END_LINE) == 0) || (strcmp(value, RETURN_DEF) == 0)){
 						type = TOKEN_KEYWORD;
 				}
 				else {
@@ -189,5 +196,3 @@ void free_context(LexerCtx* ctx){
 		free(ctx);
 	}
 }
-
-

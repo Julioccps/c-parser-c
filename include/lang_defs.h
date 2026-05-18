@@ -8,6 +8,7 @@
 #define CONSOLE_OUT "cout"
 #define SCOPE_RESOLUTION "::"
 #define END_LINE "endl"
+#define RETURN_DEF "return"
 
 // Symbols
 #define OPEN_PAR '('
