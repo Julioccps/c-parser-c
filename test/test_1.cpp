@@ -1,12 +1,11 @@
-#include <iostream>
-
-void subtracao(){
-    int numero1 = 30
-    numero2 = 15;
-    int resultado = numero1 - numero2;
-    std::cout <<              resultado << std::endl;
+void conversor() {
+    auto kelvin = [x](int y) {
+        x = 273 + y;        
+        return x;
+    };
+    int resultado = kelvin(10);
 }
 
 int main() {
-    subtracao();
+    return 0;
 }

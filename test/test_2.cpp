@@ -1,11 +1,10 @@
-#include <iostream>
-
-void multiplicacao(){
-    int numero1 = 5;
-    int numero2 = 4;
-    int resultado  numero1 * numero2;
-    std::cout << << resultado << std::endl;
+void energia(int e) {
+    auto cinetica = [e] (int m, int v) {
+        return (1/2) * m * v * v;
+    };
+    int resultado = cinetica(5, v);
 }
-int main() {
-    multiplicacao();
+
+int main(){
+    return 0;
 }
