@@ -1,12 +1,10 @@
-#include <iostream>
-
-void soma(){
-    int numero1 = 10;
-    int numero2 = 20;
-    int resultado = numero1 + numero2;
-    std::cout << resultado << std::endl;
+int velocidade(int s, int t) {
+    int v = 0;
+    v = s / t;
+    return v;
 }
+
 int main() {
-    soma();
+    int v = velocidade(10, 5);
     return 0;
 }
