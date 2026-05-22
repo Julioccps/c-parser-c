@@ -56,13 +56,25 @@ void check_semantics(ASTNode* node, SymbolTable* table) {
 	if (!node) return;
 
 	switch (node->type) {
-	case NODE_FUNC_DEF:
+	case NODE_FUNC_DEF: {
 		add_symbol(table, node->token->value, SYM_FUNCTION, node->token->line);
 		SymbolTable* func_scope = create_symbol_table(table);
 		for (int i = 0; i < node->child_count; i++) {
 			check_semantics(node->children[i], func_scope);
 		}
-		// Idealmente free_symbol_table(func_scope) mas por agora mantemos
+		break;
+	}
+
+	case NODE_LAMBDA: {
+		SymbolTable* lambda_scope = create_symbol_table(table);
+		for (int i = 0; i < node->child_count; i++) {
+			check_semantics(node->children[i], lambda_scope);
+		}
+		break;
+	}
+
+	case NODE_PARAM:
+		add_symbol(table, node->token->value, SYM_VARIABLE, node->token->line);
 		break;
 
 	case NODE_VAR_DECL:
@@ -79,14 +91,13 @@ void check_semantics(ASTNode* node, SymbolTable* table) {
 		break;
 
 	case NODE_FUNC_CALL:
-		if (!find_symbol(table, node->token->value)) {
-			fprintf(stderr, "Semantic Error: Call to undeclared function '%s' at line %d\n", 
-				node->token->value, node->token->line);
+		for (int i = 0; i < node->child_count; i++) {
+			check_semantics(node->children[i], table);
 		}
 		break;
 
 	case NODE_LITERAL:
-		if (node->token->type == TOKEN_IDENTIFIER) {
+		if (node->token && node->token->type == TOKEN_IDENTIFIER) {
 			if (!find_symbol(table, node->token->value)) {
 				fprintf(stderr, "Semantic Error: Use of undeclared identifier '%s' at line %d\n", 
 					node->token->value, node->token->line);

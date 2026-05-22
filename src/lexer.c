@@ -42,12 +42,22 @@ Token* advance_token(LexerCtx* ctx){
 		case CLOSE_PAR:
 		case OPEN_BRACE:
 		case CLOSE_BRACE:
+		case OPEN_SQUARE:
+		case CLOSE_SQUARE:
 		case SEMICOLON:
+		case COMMA:
 		case ASSIGN:
 		case OP_PLUS:
 		case OP_MINUS:
 		case OP_MULT:
-		case OP_DIV:
+		case '/':
+			if (ctx->source[ctx->cursor + 1] == '/') {
+				while (ctx->source[ctx->cursor] != '\n' && ctx->source[ctx->cursor] != '\0') {
+					ctx->cursor++;
+					ctx->column++;
+				}
+				return advance_token(ctx);
+			}
 			type = TOKEN_SYMBOL;
 			value = strdup(tmp);
 			ctx->cursor++;

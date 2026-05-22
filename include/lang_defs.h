@@ -15,7 +15,10 @@
 #define CLOSE_PAR ')'
 #define OPEN_BRACE '{'
 #define CLOSE_BRACE '}'
+#define OPEN_SQUARE '['
+#define CLOSE_SQUARE ']'
 #define SEMICOLON ';'
+#define COMMA ','
 #define ASSIGN '='
 #define BITSHIFT_LEFT "<<"
 

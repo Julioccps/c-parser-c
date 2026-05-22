@@ -13,7 +13,15 @@ Este documento descreve a gramática formal do subconjunto de C++ suportado por 
 
 <declaracao_variavel> ::= "int" <identificador> ";"
 
-<definicao_funcao> ::= "void" <identificador> "(" ")" "{" <comandos> "}"
+<definicao_funcao> ::= <tipo> <identificador> "(" <lista_parametros> ")" "{" <comandos> "}"
+
+<tipo> ::= "int" | "void"
+
+<lista_parametros> ::= <parametro> "," <lista_parametros>
+                    | <parametro>
+                    | ε
+
+<parametro> ::= <tipo> <identificador>
 
 <comandos> ::= <comando> <comandos> 
             | ε
@@ -22,6 +30,10 @@ Este documento descreve a gramática formal do subconjunto de C++ suportado por 
            | <saida> 
            | <chamada_funcao> 
            | <declaracao_variavel>
+           | <retorno>
+
+<retorno> ::= "return" <expressao> ";"
+           | "return" ";"
 
 <atribuicao> ::= <identificador> "=" <expressao> ";"
 
@@ -33,7 +45,10 @@ Este documento descreve a gramática formal do subconjunto de C++ suportado por 
 
 <fator> ::= <identificador> 
          | <inteiro> 
+         | <lambda>
          | "(" <expressao> ")"
+
+<lambda> ::= "[" "]" "(" <lista_parametros> ")" "{" <comandos> "}"
 
 <operador_add> ::= "+" | "-"
 
@@ -49,5 +64,9 @@ Este documento descreve a gramática formal do subconjunto de C++ suportado por 
               | <string> 
               | "std" "::" "endl"
 
-<chamada_funcao> ::= <identificador> "(" ")" ";"
+<chamada_funcao> ::= <identificador> "(" <lista_argumentos> ")" ";"
+
+<lista_argumentos> ::= <expressao> "," <lista_argumentos>
+                    | <expressao>
+                    | ε
 ```

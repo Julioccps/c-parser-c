@@ -25,3 +25,6 @@
     - Para isso, usamos uma Tabela de Símbolos que guarda o nome, tipo e linha
     de cada identificador, permitindo validar o escopo e evitar redeclarações
     inválidas.
+- Extensão para Parâmetros e Lambdas;
+    - O motivo: Evoluir o suporte da linguagem para permitir abstrações mais complexas, como funções que recebem dados e funções anônimas (lambdas).
+    - O que foi feito: Foram adicionados novos símbolos ao Lexer (`,`, `[`, `]`) e suporte a comentários de linha (`//`). O Parser foi expandido para suportar parâmetros e uma nova camada de expressões *postfix*, permitindo que lambdas sejam tratadas como expressões chamáveis. O Analisador Semântico agora gerencia escopos de parâmetros e valida o uso de variáveis dentro de lambdas.

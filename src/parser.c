@@ -38,10 +38,66 @@ static void add_child(ASTNode* parent, ASTNode* child) {
 }
 
 static ASTNode* parse_expression(Parser* parser);
+static ASTNode* parse_statement(Parser* parser);
+
+static void expect(Parser* parser, const char* value) {
+	if (strcmp(parser->current_token->value, value) != 0) {
+		fprintf(stderr, "Syntax Error: Expected '%s' at line %d, column %d (found '%s')\n", 
+			value, parser->current_token->line, parser->current_token->column, parser->current_token->value);
+	} else {
+		advance_parser(parser);
+	}
+}
+
+static void parse_parameters(Parser* parser, ASTNode* parent) {
+	expect(parser, "(");
+	if (strcmp(parser->current_token->value, ")") != 0) {
+		while (1) {
+			Token* ptype = parser->current_token;
+			advance_parser(parser); // type
+			Token* pid = parser->current_token;
+			advance_parser(parser); // id
+			ASTNode* param = create_node(NODE_PARAM, pid);
+			add_child(param, create_node(NODE_LITERAL, ptype));
+			add_child(parent, param);
+
+			if (strcmp(parser->current_token->value, ",") == 0) {
+				advance_parser(parser);
+			} else {
+				break;
+			}
+		}
+	}
+	expect(parser, ")");
+}
+
+static ASTNode* parse_lambda(Parser* parser) {
+	Token* start_token = parser->current_token;
+	expect(parser, "[");
+	expect(parser, "]");
+	
+	ASTNode* node = create_node(NODE_LAMBDA, start_token);
+	parse_parameters(parser, node);
+	
+	expect(parser, "{");
+	ASTNode* body = create_node(NODE_BLOCK, NULL);
+	while (strcmp(parser->current_token->value, "}") != 0 && parser->current_token->type != TOKEN_EOF) {
+		ASTNode* stmt = parse_statement(parser);
+		if (stmt) add_child(body, stmt);
+	}
+	add_child(node, body);
+	expect(parser, "}");
+	
+	return node;
+}
 
 static ASTNode* parse_primary(Parser* parser) {
 	Token* t = parser->current_token;
-	if (t->type == TOKEN_LITERAL_INT || t->type == TOKEN_IDENTIFIER || t->type == TOKEN_LITERAL_STRING) {
+	if (t->type == TOKEN_IDENTIFIER) {
+		ASTNode* node = create_node(NODE_LITERAL, t);
+		advance_parser(parser);
+		return node;
+	} else if (t->type == TOKEN_LITERAL_INT || t->type == TOKEN_LITERAL_STRING) {
 		ASTNode* node = create_node(NODE_LITERAL, t);
 		advance_parser(parser);
 		return node;
@@ -50,18 +106,43 @@ static ASTNode* parse_primary(Parser* parser) {
 		ASTNode* expr = parse_expression(parser);
 		if (strcmp(parser->current_token->value, ")") == 0) advance_parser(parser);
 		return expr;
+	} else if (strcmp(t->value, "[") == 0) {
+		return parse_lambda(parser);
 	}
 	return NULL;
 }
 
+static ASTNode* parse_postfix(Parser* parser) {
+	ASTNode* node = parse_primary(parser);
+	while (parser->current_token && strcmp(parser->current_token->value, "(") == 0) {
+		Token* open_par = parser->current_token;
+		advance_parser(parser); // (
+		ASTNode* call = create_node(NODE_FUNC_CALL, open_par);
+		add_child(call, node);
+		if (strcmp(parser->current_token->value, ")") != 0) {
+			while (1) {
+				add_child(call, parse_expression(parser));
+				if (strcmp(parser->current_token->value, ",") == 0) {
+					advance_parser(parser);
+				} else {
+					break;
+				}
+			}
+		}
+		expect(parser, ")");
+		node = call;
+	}
+	return node;
+}
+
 static ASTNode* parse_multiplicative(Parser* parser) {
-	ASTNode* left = parse_primary(parser);
+	ASTNode* left = parse_postfix(parser);
 	while (strcmp(parser->current_token->value, "*") == 0 || strcmp(parser->current_token->value, "/") == 0) {
 		Token* op = parser->current_token;
 		advance_parser(parser);
 		ASTNode* node = create_node(NODE_BINARY_OP, op);
 		add_child(node, left);
-		add_child(node, parse_primary(parser));
+		add_child(node, parse_postfix(parser));
 		left = node;
 	}
 	return left;
@@ -80,15 +161,6 @@ static ASTNode* parse_expression(Parser* parser) {
 	return left;
 }
 
-static void expect(Parser* parser, const char* value) {
-	if (strcmp(parser->current_token->value, value) != 0) {
-		fprintf(stderr, "Syntax Error: Expected '%s' at line %d, column %d (found '%s')\n", 
-			value, parser->current_token->line, parser->current_token->column, parser->current_token->value);
-	} else {
-		advance_parser(parser);
-	}
-}
-
 static ASTNode* parse_statement(Parser* parser) {
 	if (parser->current_token->type == TOKEN_IDENTIFIER) {
 		Token* id = parser->current_token;
@@ -101,17 +173,10 @@ static ASTNode* parse_statement(Parser* parser) {
 			add_child(node, parse_expression(parser));
 			expect(parser, ";");
 			return node;
-		} else if (next && strcmp(next->value, "(") == 0) {
-			ASTNode* node = create_node(NODE_FUNC_CALL, id);
-			advance_parser(parser); // ID
-			advance_parser(parser); // (
-			if (strcmp(parser->current_token->value, ")") == 0) advance_parser(parser);
-			else {
-				while(strcmp(parser->current_token->value, ")") != 0 && parser->current_token->type != TOKEN_EOF) advance_parser(parser);
-				advance_parser(parser);
-			}
+		} else {
+			ASTNode* expr = parse_expression(parser);
 			expect(parser, ";");
-			return node;
+			return expr;
 		}
 	} else if (parser->current_token->type == TOKEN_KEYWORD) {
 		if (strcmp(parser->current_token->value, "std") == 0) {
@@ -151,12 +216,16 @@ static ASTNode* parse_statement(Parser* parser) {
 }
 
 static ASTNode* parse_function(Parser* parser) {
+	Token* type_token = parser->current_token;
 	advance_parser(parser); // Skip type
 	ASTNode* node = create_node(NODE_FUNC_DEF, parser->current_token);
 	advance_parser(parser); // Skip ID
-	advance_parser(parser); // Skip (
-	advance_parser(parser); // Skip )
-	advance_parser(parser); // Skip {
+	
+	// Add return type as first child
+	add_child(node, create_node(NODE_LITERAL, type_token));
+
+	parse_parameters(parser, node);
+	expect(parser, "{");
 
 	ASTNode* body = create_node(NODE_BLOCK, NULL);
 	while (strcmp(parser->current_token->value, "}") != 0 && parser->current_token->type != TOKEN_EOF) {
