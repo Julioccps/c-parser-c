@@ -11,17 +11,22 @@ Este documento descreve a gramática formal do subconjunto de C++ suportado por 
 <declaracao> ::= <definicao_funcao> 
               | <declaracao_variavel>
 
-<declaracao_variavel> ::= "int" <identificador> ";"
+<declaracao_variavel> ::= <tipo_variavel> <identificador> <inicializacao> ";"
 
-<definicao_funcao> ::= <tipo> <identificador> "(" <lista_parametros> ")" "{" <comandos> "}"
+<tipo_variavel> ::= "int" | "auto"
 
-<tipo> ::= "int" | "void"
+<inicializacao> ::= "=" <expressao>
+                 | ε
+
+<definicao_funcao> ::= <tipo_retorno> <identificador> "(" <lista_parametros> ")" "{" <comandos> "}"
+
+<tipo_retorno> ::= "int" | "void"
 
 <lista_parametros> ::= <parametro> "," <lista_parametros>
                     | <parametro>
                     | ε
 
-<parametro> ::= <tipo> <identificador>
+<parametro> ::= <tipo_variavel> <identificador>
 
 <comandos> ::= <comando> <comandos> 
             | ε
@@ -43,12 +48,21 @@ Este documento descreve a gramática formal do subconjunto de C++ suportado por 
 <termo> ::= <fator> <operador_mult> <termo> 
          | <fator>
 
-<fator> ::= <identificador> 
-         | <inteiro> 
-         | <lambda>
-         | "(" <expressao> ")"
+<fator> ::= <postfix>
 
-<lambda> ::= "[" "]" "(" <lista_parametros> ")" "{" <comandos> "}"
+<postfix> ::= <primario> "(" <lista_argumentos> ")"
+           | <primario>
+
+<primario> ::= <identificador> 
+            | <inteiro> 
+            | <lambda>
+            | "(" <expressao> ")"
+
+<lambda> ::= "[" <lista_capturas> "]" "(" <lista_parametros> ")" "{" <comandos> "}"
+
+<lista_capturas> ::= <identificador> "," <lista_capturas>
+                  | <identificador>
+                  | ε
 
 <operador_add> ::= "+" | "-"
 
@@ -64,7 +78,7 @@ Este documento descreve a gramática formal do subconjunto de C++ suportado por 
               | <string> 
               | "std" "::" "endl"
 
-<chamada_funcao> ::= <identificador> "(" <lista_argumentos> ")" ";"
+<chamada_funcao> ::= <expressao> ";"
 
 <lista_argumentos> ::= <expressao> "," <lista_argumentos>
                     | <expressao>

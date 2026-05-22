@@ -27,4 +27,4 @@
     inválidas.
 - Extensão para Parâmetros e Lambdas;
     - O motivo: Evoluir o suporte da linguagem para permitir abstrações mais complexas, como funções que recebem dados e funções anônimas (lambdas).
-    - O que foi feito: Foram adicionados novos símbolos ao Lexer (`,`, `[`, `]`) e suporte a comentários de linha (`//`). O Parser foi expandido para suportar parâmetros e uma nova camada de expressões *postfix*, permitindo que lambdas sejam tratadas como expressões chamáveis. O Analisador Semântico agora gerencia escopos de parâmetros e valida o uso de variáveis dentro de lambdas.
+    - O que foi feito: Foram adicionados novos símbolos ao Lexer (`,`, `[`, `]`), a palavra-chave `auto` e suporte a comentários de linha (`//`). O Parser foi expandido para suportar parâmetros, listas de captura em lambdas e uma nova camada de expressões *postfix*, permitindo que lambdas sejam tratadas como expressões chamáveis. O Analisador Semântico agora gerencia escopos de parâmetros e valida o uso de variáveis dentro de lambdas.

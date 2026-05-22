@@ -138,7 +138,8 @@ Token* advance_token(LexerCtx* ctx){
 				value = strndup(&ctx->source[start], length);
 				if ((strcmp(value, INT_DEF) == 0) || (strcmp(value, VOID_DEF) == 0) 
 				    || (strcmp(value, STD_NAMESPACE) == 0) || (strcmp(value, CONSOLE_OUT) == 0)
-				    || (strcmp(value, END_LINE) == 0) || (strcmp(value, RETURN_DEF) == 0)){
+				    || (strcmp(value, END_LINE) == 0) || (strcmp(value, RETURN_DEF) == 0)
+				    || (strcmp(value, AUTO_DEF) == 0)){
 						type = TOKEN_KEYWORD;
 				}
 				else {

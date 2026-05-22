@@ -74,9 +74,25 @@ static void parse_parameters(Parser* parser, ASTNode* parent) {
 static ASTNode* parse_lambda(Parser* parser) {
 	Token* start_token = parser->current_token;
 	expect(parser, "[");
-	expect(parser, "]");
 	
 	ASTNode* node = create_node(NODE_LAMBDA, start_token);
+	
+	// Parse capture list
+	if (strcmp(parser->current_token->value, "]") != 0) {
+		while (1) {
+			if (parser->current_token->type == TOKEN_IDENTIFIER) {
+				add_child(node, create_node(NODE_LITERAL, parser->current_token));
+				advance_parser(parser);
+			}
+			if (strcmp(parser->current_token->value, ",") == 0) {
+				advance_parser(parser);
+			} else {
+				break;
+			}
+		}
+	}
+	expect(parser, "]");
+	
 	parse_parameters(parser, node);
 	
 	expect(parser, "{");
@@ -191,8 +207,8 @@ static ASTNode* parse_statement(Parser* parser) {
 			}
 			expect(parser, ";");
 			return node;
-		} else if (strcmp(parser->current_token->value, "int") == 0) {
-			advance_parser(parser); // int
+		} else if (strcmp(parser->current_token->value, "int") == 0 || strcmp(parser->current_token->value, "auto") == 0) {
+			advance_parser(parser); // int or auto
 			ASTNode* node = create_node(NODE_VAR_DECL, parser->current_token);
 			advance_parser(parser); // ID
 			if (strcmp(parser->current_token->value, "=") == 0) {

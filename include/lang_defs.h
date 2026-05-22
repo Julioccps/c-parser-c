@@ -9,6 +9,7 @@
 #define SCOPE_RESOLUTION "::"
 #define END_LINE "endl"
 #define RETURN_DEF "return"
+#define AUTO_DEF "auto"
 
 // Symbols
 #define OPEN_PAR '('
