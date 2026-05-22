@@ -1,7 +1,7 @@
 #ifndef LANG_DEFS_H
 #define LANG_DEFS_H
 
-// KeyWords (Minimal subset for UEM assignment)
+// KeyWords (Minimal subset)
 #define INT_DEF "int"
 #define VOID_DEF "void"
 #define STD_NAMESPACE "std"
