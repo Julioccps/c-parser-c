@@ -2,17 +2,19 @@
 #include <string.h>
 #include <stdlib.h>
 #include "lexer.h"
+#include "parser.h"
+#include "semantic.h"
 
 const char* token_type_to_str(TokenType type) {
 	switch (type) {
-		case TOKEN_KEYWORD: return "KEYWORD";
-		case TOKEN_SYMBOL: return "SYMBOL";
-		case TOKEN_IDENTIFIER: return "IDENTIFIER";
-		case TOKEN_LITERAL_INT: return "LITERAL_INT";
-		case TOKEN_LITERAL_STRING: return "LITERAL_STRING";
-		case TOKEN_EOF: return "EOF";
-		case TOKEN_ERROR: return "ERROR";
-		default: return "UNKNOWN";
+	case TOKEN_KEYWORD: return "KEYWORD";
+	case TOKEN_SYMBOL: return "SYMBOL";
+	case TOKEN_IDENTIFIER: return "IDENTIFIER";
+	case TOKEN_LITERAL_INT: return "LITERAL_INT";
+	case TOKEN_LITERAL_STRING: return "LITERAL_STRING";
+	case TOKEN_EOF: return "EOF";
+	case TOKEN_ERROR: return "ERROR";
+	default: return "UNKNOWN";
 	}
 }
 
@@ -46,9 +48,8 @@ int main(int argc, char** argv){
 		fprintf(stderr, "Error: No input file provided. Use -f <filename>.\n");
 		return 1;
 	}
-	
+
 	FILE* file = fopen(filename, "r");
-	
 	if (file == NULL) {
 		fprintf(stderr, "Error: Could not open file '%s'.\n", filename);
 		return 1;
@@ -73,21 +74,23 @@ int main(int argc, char** argv){
 	LexerCtx* lexer = init_lexer(buffer);
 	tokenize_all(lexer);
 
-	printf("--- TOKENS FOUND ---\n");
-	printf("%-15s | %-15s | %-5s | %-5s\n", "TYPE", "VALUE", "LINE", "COL");
-	printf("----------------------------------------------------------\n");
-	for (int i = 0; i < lexer->token_count; i++) {
-		Token* t = lexer->tokens[i];
-		printf("%-15s | %-15s | %-5d | %-5d\n", 
-			token_type_to_str(t->type), 
-			t->value, 
-			t->line, 
-			t->column);
-	}
-	printf("----------------------------------------------------------\n");
+	Parser* parser = init_parser(lexer);
+	ASTNode* ast = parse_program(parser);
 
+	printf("--- ABSTRACT SYNTAX TREE ---\n");
+	print_ast(ast, 0);
+	printf("----------------------------\n");
+
+	printf("--- SEMANTIC ANALYSIS ---\n");
+	SymbolTable* global_table = create_symbol_table(NULL);
+	check_semantics(ast, global_table);
+	printf("-------------------------\n");
+
+	free_ast(ast);
+	free(parser);
+	free_symbol_table(global_table);
 	free_context(lexer);
 	free(buffer);
-	
+
 	return 0;
 }

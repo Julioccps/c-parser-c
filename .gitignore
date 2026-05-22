@@ -4,6 +4,7 @@ build/
 *.plist
 tags
 *.lock
+previous
 compile_commands.json
 
 .cache/*
