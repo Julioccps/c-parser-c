@@ -4,6 +4,24 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef _WIN32
+    // Resolve o problema dos avisos do strdup
+    #define strdup _strdup
+
+    // Resolve o problema do erro do strndup criando a função em falta
+    char* strndup(const char* s, size_t n) {
+        size_t len = 0;
+        while (len < n && s[len] != '\0') {
+            len++;
+        }
+        char* new_str = (char*)malloc(len + 1);
+        if (new_str) {
+            memcpy(new_str, s, len);
+            new_str[len] = '\0';
+        }
+        return new_str;
+    }
+#endif
 
 Token* create_token(TokenType type, const char *value, int line, int column){
 	Token* token = malloc(sizeof(Token));
