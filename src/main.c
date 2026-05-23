@@ -84,6 +84,7 @@ int main(int argc, char** argv){
 	printf("--- SEMANTIC ANALYSIS ---\n");
 	SymbolTable* global_table = create_symbol_table(NULL);
 	check_semantics(ast, global_table);
+	check_unused_variables(global_table);
 	printf("-------------------------\n");
 
 	free_ast(ast);

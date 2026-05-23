@@ -1,6 +1,6 @@
 # Gramática da Linguagem (EBNF)
 
-Este documento descreve a gramática formal do subconjunto de C++ suportado por este analisador.
+Este documento descreve a gramática do subconjunto de C++ suportado por este analisador.
 
 ```ebnf
 <programa> ::= <lista_declaracoes>
