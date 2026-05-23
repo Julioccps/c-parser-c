@@ -91,7 +91,11 @@ const char* check_semantics(ASTNode* node, SymbolTable* table) {
 	switch (node->type) {
 	case NODE_PROGRAM:
 		for (int i = 0; i < node->child_count; i++) {
-			check_semantics(node->children[i], table);
+			const char* stmt_type = check_semantics(node->children[i], table);
+			if (node->children[i]->type == NODE_FUNC_CALL && strcmp(stmt_type, "void") != 0) {
+				printf("Semantic Warning: Ignoring return value of function at line %d\n", 
+					node->children[i]->token->line);
+			}
 		}
 		return "void";
 

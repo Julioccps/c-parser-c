@@ -28,3 +28,6 @@
 - Extensão para Parâmetros e Lambdas;
     - O motivo: Evoluir o suporte da linguagem para permitir abstrações mais complexas, como funções que recebem dados e funções anônimas (lambdas).
     - O que foi feito: Foram adicionados novos símbolos ao Lexer (`,`, `[`, `]`), a palavra-chave `auto` e suporte a comentários de linha (`//`). O Parser foi expandido para suportar parâmetros, listas de captura em lambdas e uma nova camada de expressões *postfix*, permitindo que lambdas sejam tratadas como expressões chamáveis. O Analisador Semântico agora gerencia escopos de parâmetros e valida o uso de variáveis dentro de lambdas.
+- Funcionalidades Semânticas Opcionais;
+    - O motivo: Tornar o analisador mais inteligente e útil, detectando não apenas erros fatais, mas também práticas de código questionáveis que podem levar a erros lógicos ou desperdício de recursos.
+    - O que foi feito: Expandimos o analisador semântico para gerar advertências sobre variáveis declaradas mas nunca utilizadas e sombreamento (*shadowing*) de variáveis em escopos internos. Implementamos validações para garantir que funções que declaram retorno `int` contenham obrigatoriamente um comando `return` e que funções `void` não sejam usadas em expressões ou atribuições. Também adicionamos a detecção de chamadas a funções inexistentes e avisos para retornos de função ignorados.
