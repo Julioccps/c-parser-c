@@ -5,6 +5,5 @@ int velocidade(int s, int t) {
 }
 
 int main() {
-    int v = velocidade(10, 5);
-    return 0;
+    return velocidade(10, 5);
 }
