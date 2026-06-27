@@ -1,3 +1,5 @@
+#include <compat.hpp>
+
 int velocidade(int s, int t) {
     int v = 0;
     v = s / t;
@@ -5,5 +7,6 @@ int velocidade(int s, int t) {
 }
 
 int main() {
-    return velocidade(10, 5);
+    print(velocidade(10, 5));
+    return 0;
 }

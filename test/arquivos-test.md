@@ -3,7 +3,7 @@
 > Julio César Carvalho de Paula Souza RA138288
 
 ## test_0
-- A função velocidade vai receber duas variáveis, vai fazer uma divisão de `s`, `t` e vai retornar `v`.
+- A função velocidade vai receber duas variáveis, vai fazer uma divisão de `s`, `t` e vai dar um print `v`.
 - Esse arquivo não deve apresentar nenhum erro ao analisar.
 
 ## test_1
@@ -25,3 +25,11 @@
 ## test_5
 - O arquivo vai ter uma função `func_v` que tem um tipo de retorno `void`, e dentro dela tem uma variável `nao_usada` que não é usada, e na função `main` tem uma variável `x` que recebe a chamada da função `func_v`.
 - Esse arquivo vai ter um erro que é a atribuição de um valor de retorno de uma função `void` para uma variável, o que não é permitido em C++. Além disso, a variável `nao_usada` dentro da função `func_v` não é utilizada, o que deve gerar um warning de variável não utilizada.
+
+## test_6
+- O arquivo vai ter uma função `peso` que recebe um parâmetro `massa` e dar um print do peso calculado multiplicando a massa pela gravidade (10). Na função `main`, a função `peso` é chamada com o valor 100.
+- Esse arquivo não deve apresentar nenhum erro ao analisar.
+
+## test_7
+- O arquivo vai ter uma função `main` que cria uma variável `s` do tipo `string` e atribui a ela o valor "Hello, World!". Em seguida, a função `print` é chamada para exibir o valor da variável `s`.
+- Esse arquivo não deve apresentar nenhum erro ao analisar.
