@@ -21,5 +21,9 @@ make
 ./build/cppparser -f <nome_do_arquivo>
 ```
 
+```bash
+python3 misc/interpreter.py <nome_do_arquivo>
+```
+
 ## Documentação do projeto
 - [Arquivo Analyser](docs/analyser.md);
