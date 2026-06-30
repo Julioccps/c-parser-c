@@ -4,6 +4,8 @@
 #include "lexer.h"
 #include "parser.h"
 #include "semantic.h"
+#include "codegen.h"
+
 
 const char* token_type_to_str(TokenType type) {
 	switch (type) {
@@ -83,9 +85,26 @@ int main(int argc, char** argv){
 
 	printf("--- SEMANTIC ANALYSIS ---\n");
 	SymbolTable* global_table = create_symbol_table(NULL);
+	add_symbol(global_table, "print", SYM_FUNCTION, "void", 0);
 	check_semantics(ast, global_table);
 	check_unused_variables(global_table);
 	printf("-------------------------\n");
+
+	// Generate output bytecode filename by replacing extension with .bc
+	char bc_filename[512];
+	strncpy(bc_filename, filename, sizeof(bc_filename) - 1);
+	bc_filename[sizeof(bc_filename) - 1] = '\0';
+	char* dot = strrchr(bc_filename, '.');
+	if (dot && (strcmp(dot, ".cpp") == 0 || strcmp(dot, ".c") == 0)) {
+		strcpy(dot, ".bc");
+	} else {
+		strncat(bc_filename, ".bc", sizeof(bc_filename) - strlen(bc_filename) - 1);
+	}
+
+	printf("--- CODE GENERATION ---\n");
+	generate_bytecode(ast, bc_filename);
+	printf("Bytecode written to: %s\n", bc_filename);
+	printf("-----------------------\n");
 
 	free_ast(ast);
 	free(parser);
